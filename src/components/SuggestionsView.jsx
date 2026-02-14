@@ -1,18 +1,5 @@
-import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, Navigation2, Clock, Star, Eye } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
-
-const GOOGLE_MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
-
-const LOCATION_COORDS = {
-  'Community Center': { lat: 37.7749, lng: -122.4194, address: '123 Main St, San Francisco, CA' },
-  'Wellness Studio': { lat: 37.7850, lng: -122.4090, address: '456 Valencia St, San Francisco, CA' },
-  'Riverside Park': { lat: 37.7694, lng: -122.4862, address: 'Golden Gate Park, San Francisco, CA' },
-};
-
-const BACKUP_LOCATIONS = [
-  { name: 'Sunrise Yoga', distance: '0.5 miles', lat: 37.7720, lng: -122.4250, time: '8 min walk', matchScore: 92 },
-  { name: 'Downtown Studio', distance: '0.9 miles', lat: 37.7800, lng: -122.4100, time: '4 min drive', matchScore: 87 },
-];
 
 const BIOMARKER_ALERTS = [
   {
@@ -102,126 +89,7 @@ function AlertCard({ alert, index }) {
   );
 }
 
-function RouteMapPreview({ location }) {
-  const coords = LOCATION_COORDS[location] || LOCATION_COORDS['Community Center'];
-  const mapSrc = GOOGLE_MAPS_KEY
-    ? `https://www.google.com/maps/embed/v1/directions?key=${GOOGLE_MAPS_KEY}&origin=Current+Location,${coords.lat - 0.008},${coords.lng + 0.005}&destination=${coords.lat},${coords.lng}&mode=walking&zoom=14`
-    : '';
-
-  return (
-    <div className="mt-5">
-      <div className="relative rounded-3xl overflow-hidden border border-orange-200/50 shadow-sm">
-        {GOOGLE_MAPS_KEY ? (
-          <iframe
-            src={mapSrc}
-            className="w-full"
-            style={{ border: 0, height: '200px' }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Route to activity location"
-          />
-        ) : (
-          <div className="w-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center" style={{ height: '200px' }}>
-            <p className="text-amber-700 text-sm" style={{ fontFamily: 'Work Sans, sans-serif' }}>Map preview unavailable</p>
-          </div>
-        )}
-        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-orange-200/40 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-orange-500" />
-          <span className="text-sm font-semibold text-amber-800" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-            10 min arrival
-          </span>
-        </div>
-      </div>
-      <p className="text-sm text-amber-600 mt-2 flex items-center gap-1.5" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-        <MapPin className="w-3.5 h-3.5" />
-        {coords.address}
-      </p>
-    </div>
-  );
-}
-
-function BackupExerciseList() {
-  const center = LOCATION_COORDS['Community Center'];
-  const markersParam = BACKUP_LOCATIONS.map((loc, i) =>
-    `&markers=color:red%7Clabel:${String.fromCharCode(65 + i)}%7C${loc.lat},${loc.lng}`
-  ).join('');
-  const mapSrc = GOOGLE_MAPS_KEY
-    ? `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_KEY}&center=${center.lat},${center.lng}&zoom=13`
-    : '';
-
-  return (
-    <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-amber-200/50 card-hover animate-fadeInUp" style={{ animationDelay: '0.75s' }}>
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
-          <MapPin className="w-5 h-5 text-white" />
-        </div>
-        <h3 className="text-lg font-semibold text-amber-900" style={{ fontFamily: 'Spectral, serif' }}>
-          Location Intelligence
-        </h3>
-      </div>
-
-      <div className="relative rounded-3xl overflow-hidden border border-orange-200/50 shadow-sm mb-5">
-        {GOOGLE_MAPS_KEY ? (
-          <iframe
-            src={mapSrc}
-            className="w-full h-40 md:h-48"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Nearby alternative locations"
-          />
-        ) : (
-          <div className="w-full h-40 md:h-48 bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center">
-            <p className="text-amber-700 text-sm" style={{ fontFamily: 'Work Sans, sans-serif' }}>Map preview unavailable</p>
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {BACKUP_LOCATIONS.map((loc) => (
-          <div key={loc.name} className="bg-amber-50 rounded-2xl p-5 border border-amber-200/40 card-hover">
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/80 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-orange-500" />
-                </div>
-                <h4 className="text-lg font-semibold text-amber-900" style={{ fontFamily: 'Spectral, serif' }}>
-                  {loc.name}
-                </h4>
-              </div>
-              <div className="bg-gradient-to-r from-purple-500 to-rose-500 text-white rounded-full px-3 py-1 text-sm font-semibold flex items-center gap-1 flex-shrink-0">
-                <Star className="w-3.5 h-3.5" />
-                {loc.matchScore}%
-              </div>
-            </div>
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-amber-700 flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                  <Navigation2 className="w-3.5 h-3.5 text-amber-500" />
-                  {loc.distance}
-                </span>
-                <span className="text-sm bg-orange-100/80 text-orange-700 px-3 py-1 rounded-full font-medium flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                  <Clock className="w-3.5 h-3.5" />
-                  {loc.time}
-                </span>
-              </div>
-              <button className="flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:text-orange-700 bg-white/80 hover:bg-white px-3 py-1.5 rounded-full border border-orange-200/60 transition-all" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                <Eye className="w-3.5 h-3.5" />
-                Quick View
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function SuggestionsView({ currentDay, setCurrentDay, sessionData }) {
-  const activity = suggestions[currentDay].activity;
-
   return (
     <div className="space-y-6">
       <div className="space-y-4 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
@@ -279,28 +147,25 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm font-medium text-orange-600" style={{fontFamily: 'Work Sans, sans-serif'}}>
-                  {activity.time}
+                  {suggestions[currentDay].activity.time}
                 </span>
               </div>
               <h4 className="text-2xl text-amber-900 font-semibold mb-1" style={{fontFamily: 'Spectral, serif'}}>
-                {activity.title}
+                {suggestions[currentDay].activity.title}
               </h4>
               <p className="text-sm text-amber-700 mb-2" style={{fontFamily: 'Work Sans, sans-serif'}}>
-                📍 {activity.location}
+                📍 {suggestions[currentDay].activity.location}
               </p>
               <p className="text-amber-800 font-light italic" style={{fontFamily: 'Work Sans, sans-serif'}}>
-                {activity.benefit}
+                {suggestions[currentDay].activity.benefit}
               </p>
-              <RouteMapPreview location={activity.location} />
             </div>
           </div>
-          <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-rose-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all whitespace-nowrap self-start">
+          <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-rose-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all whitespace-nowrap">
             Save Spot
           </button>
         </div>
       </div>
-
-      <BackupExerciseList />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeInUp" style={{animationDelay: '0.8s'}}>
         <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 border border-amber-200/50 card-hover">

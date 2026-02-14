@@ -19,7 +19,7 @@ src/
     LongevityScoreHero.jsx - Hero section with score display
     Navigation.jsx       - Tab navigation (Dashboard, For You, Metrics, Upload)
     DashboardView.jsx    - Dashboard with charts, key metrics, and community match card
-    SuggestionsView.jsx  - Daily suggestions, biomarker alerts, route maps, backup locations
+    SuggestionsView.jsx  - Daily suggestions (activities, meals, micro-practices)
     MetricsView.jsx      - Detailed metrics across all categories
     UploadView.jsx       - Excel file upload + spreadsheet display
     SpreadsheetView.jsx  - Table rendering of biomarker data matching Excel layout
@@ -47,12 +47,7 @@ src/
 - All session config centralized in sessions.js — adding/removing sessions only requires updating SESSION_LIST
 - All components dynamically iterate SESSION_LIST for session buttons, chart data, spreadsheet columns
 
-## Environment Variables
-- VITE_GOOGLE_MAPS_KEY — Google Maps Embed API key for route previews in SuggestionsView
-
 ## Recent Changes
-- 2026-02-14: Added interactive maps to SuggestionsView: inline route preview with "10 min walk" badge, backup locations section with Parkside Pilates and Core Yoga Hub
-- 2026-02-14: Added Dynamic Biomarker Alerts (Grip Strength, Core Stability, Balance) to For You view
 - 2026-02-14: Refactored from 3 sessions to 5 checkpoint sessions (cp1-cp5) with relative date labels and centralized config
 - 2026-02-14: Added community matching feature with CommunityMatchCard (trajectory overlay), MessagingPortal (chat + visual-only charts), and preconfigured class/meal system messages
 - 2026-02-14: Fixed spreadsheet formatting: context-aware percent display, correct negative change handling, no trailing spacer rows
