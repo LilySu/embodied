@@ -1,5 +1,7 @@
-import { Leaf, Calendar, Heart, Sprout, Sparkles } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
+import directionsMap from '@assets/Screenshot_2026-02-14_at_3.26.16_PM_1771111584615.png';
+import alternativesMap from '@assets/Screenshot_2026-02-14_at_3.26.59_PM_1771111623310.png';
 
 const BIOMARKER_ALERTS = [
   {
@@ -164,6 +166,36 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
           <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-rose-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all whitespace-nowrap">
             Save Spot
           </button>
+        </div>
+
+        <div className="mt-6 space-y-5">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="w-4 h-4 text-orange-500" />
+              <span className="text-sm font-semibold text-amber-800 uppercase tracking-wide" style={{fontFamily: 'Work Sans, sans-serif'}}>
+                Directions
+              </span>
+            </div>
+            <img
+              src={directionsMap}
+              alt="Directions to Community Center"
+              className="w-full rounded-2xl border border-orange-200/50 shadow-sm"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="w-4 h-4 text-rose-500" />
+              <span className="text-sm font-semibold text-amber-800 uppercase tracking-wide" style={{fontFamily: 'Work Sans, sans-serif'}}>
+                Other Alternatives
+              </span>
+            </div>
+            <img
+              src={alternativesMap}
+              alt="Alternative locations nearby"
+              className="w-full rounded-2xl border border-rose-200/50 shadow-sm"
+            />
+          </div>
         </div>
       </div>
 
