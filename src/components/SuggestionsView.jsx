@@ -1,100 +1,86 @@
-import { Leaf, Calendar, Heart, Sprout, Sparkles, AlertTriangle } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
 
-const ALERT_CHECKS = [
+const BIOMARKER_ALERTS = [
   {
-    metric: 'downwardDog',
     label: 'Grip Strength',
-    threshold: 0.10,
+    dropPercent: 10,
+    emoji: '🤲',
     exercise: 'Downward Facing Dog',
     description: 'Holding this pose rebuilds the hand-to-floor connection and strengthens your grip endurance.',
+    gradient: 'from-rose-100/90 to-orange-50/90',
+    accent: 'rose',
   },
   {
-    metric: 'plankHold',
     label: 'Core Stability',
-    threshold: 0.10,
-    exercise: 'Dead Bug',
-    description: 'This focuses on core engagement quality to rebuild the stability needed for longer holds.',
+    dropPercent: 5,
+    emoji: '🧘',
+    exercise: 'Hold a Plank',
+    prescription: 'Aim for at least 15 seconds, 4 times a week.',
+    description: 'Rebuilding your plank hold restores the deep core engagement needed for every movement you do.',
+    gradient: 'from-amber-100/90 to-orange-50/90',
+    accent: 'amber',
   },
   {
-    metric: 'singleLegL',
     label: 'Balance & Symmetry',
-    threshold: 0.10,
+    dropPercent: 5,
+    emoji: '🌳',
     exercise: 'Tree Pose (L)',
     description: 'Practicing a static balance pose helps recalibrate your stability and weight distribution.',
-  },
-  {
-    metrics: ['wellbeing', 'energyLevel'],
-    label: 'Energy & Vitality',
-    threshold: 0.15,
-    exercise: 'Gentle Side Plank',
-    description: 'A shorter, focused effort can help re-engage the body\'s awareness without causing further fatigue.',
+    gradient: 'from-orange-100/90 to-amber-50/90',
+    accent: 'orange',
   },
 ];
 
-function detectAlerts(sessionData) {
-  if (!sessionData?.cp5 || !sessionData?.cp4) return [];
-
-  const cp5 = sessionData.cp5;
-  const cp4 = sessionData.cp4;
-  const triggered = [];
-
-  for (const check of ALERT_CHECKS) {
-    if (check.metrics) {
-      const drops = check.metrics.map(m => {
-        const prev = cp4[m];
-        const curr = cp5[m];
-        if (!prev || prev === 0) return 0;
-        return (prev - curr) / prev;
-      });
-      const avgDrop = drops.reduce((a, b) => a + b, 0) / drops.length;
-      if (avgDrop >= check.threshold) {
-        triggered.push({
-          ...check,
-          dropPercent: Math.round(avgDrop * 100),
-        });
-      }
-    } else {
-      const prev = cp4[check.metric];
-      const curr = cp5[check.metric];
-      if (!prev || prev === 0) continue;
-      const drop = (prev - curr) / prev;
-      if (drop >= check.threshold) {
-        triggered.push({
-          ...check,
-          dropPercent: Math.round(drop * 100),
-        });
-      }
-    }
-  }
-
-  return triggered;
-}
+const ACCENT_STYLES = {
+  rose: {
+    badge: 'bg-rose-200/70 text-rose-700',
+    border: 'border-rose-200/60',
+    heading: 'text-rose-800',
+    tag: 'text-rose-600',
+  },
+  amber: {
+    badge: 'bg-amber-200/70 text-amber-700',
+    border: 'border-amber-200/60',
+    heading: 'text-amber-800',
+    tag: 'text-amber-600',
+  },
+  orange: {
+    badge: 'bg-orange-200/70 text-orange-700',
+    border: 'border-orange-200/60',
+    heading: 'text-orange-800',
+    tag: 'text-orange-600',
+  },
+};
 
 function AlertCard({ alert, index }) {
+  const s = ACCENT_STYLES[alert.accent];
+
   return (
     <div
-      className="bg-gradient-to-br from-rose-50/90 to-amber-50/90 rounded-2xl p-5 border-2 border-rose-300 animate-alertPulse animate-fadeInUp"
-      style={{ animationDelay: `${index * 0.1}s` }}
+      className={`bg-gradient-to-br ${alert.gradient} rounded-3xl p-6 border ${s.border} animate-alertPulse card-hover animate-fadeInUp`}
+      style={{ animationDelay: `${0.15 + index * 0.12}s` }}
     >
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center flex-shrink-0">
-          <AlertTriangle className="w-5 h-5 text-rose-500" />
-        </div>
+      <div className="flex items-start gap-5">
+        <div className="text-4xl flex-shrink-0 pt-1">{alert.emoji}</div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs uppercase tracking-wider font-semibold text-rose-600" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-              {alert.label} Alert
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className={`text-[11px] uppercase tracking-widest font-semibold ${s.tag}`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              {alert.label}
             </span>
-            <span className="text-xs bg-rose-200/60 text-rose-700 px-2 py-0.5 rounded-full font-medium" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-              -{alert.dropPercent}%
+            <span className={`text-[11px] ${s.badge} px-2.5 py-0.5 rounded-full font-semibold`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              ↓ {alert.dropPercent}% this month
             </span>
           </div>
-          <p className="text-amber-900 text-sm leading-relaxed mb-1" style={{ fontFamily: 'Spectral, serif' }}>
-            Your {alert.label.toLowerCase()} is lower by {alert.dropPercent}% today.
-            {' '}Suggested exercise: <span className="font-semibold text-amber-800">{alert.exercise}</span>.
-          </p>
-          <p className="text-xs text-amber-700/80 leading-relaxed" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+          <h4 className={`text-xl md:text-2xl font-semibold ${s.heading} mb-1`} style={{ fontFamily: 'Spectral, serif' }}>
+            {alert.exercise}
+          </h4>
+          {alert.prescription && (
+            <p className="text-sm font-medium text-amber-800 mb-1.5" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              {alert.prescription}
+            </p>
+          )}
+          <p className="text-sm text-amber-700/90 leading-relaxed" style={{ fontFamily: 'Work Sans, sans-serif' }}>
             {alert.description}
           </p>
         </div>
@@ -104,22 +90,18 @@ function AlertCard({ alert, index }) {
 }
 
 export default function SuggestionsView({ currentDay, setCurrentDay, sessionData }) {
-  const alerts = detectAlerts(sessionData);
-
   return (
     <div className="space-y-6">
-      {alerts.length > 0 && (
-        <div className="space-y-3 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-          <h3 className="text-xs uppercase tracking-widest text-rose-600 font-semibold px-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-            Biomarker Alerts
-          </h3>
-          {alerts.map((alert, i) => (
-            <AlertCard key={alert.label} alert={alert} index={i} />
-          ))}
-        </div>
-      )}
+      <div className="space-y-4 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+        <h3 className="text-xs uppercase tracking-widest text-rose-600 font-semibold px-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+          Your Body This Month
+        </h3>
+        {BIOMARKER_ALERTS.map((alert, i) => (
+          <AlertCard key={alert.label} alert={alert} index={i} />
+        ))}
+      </div>
 
-      <div className="flex justify-center gap-3 mb-6 animate-fadeInUp" style={{animationDelay: '0.4s'}}>
+      <div className="flex justify-center gap-3 mb-6 animate-fadeInUp" style={{animationDelay: '0.5s'}}>
         {[
           { key: 'day1', label: 'Today' },
           { key: 'day2', label: 'Tomorrow' },
@@ -140,7 +122,7 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
         ))}
       </div>
 
-      <div className="bg-gradient-to-br from-rose-100/80 to-orange-100/80 rounded-3xl p-8 border border-rose-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.5s'}}>
+      <div className="bg-gradient-to-br from-rose-100/80 to-orange-100/80 rounded-3xl p-8 border border-rose-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.6s'}}>
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center flex-shrink-0 animate-float">
             <Leaf className="w-7 h-7 text-rose-600" />
@@ -156,7 +138,7 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
         </div>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.6s'}}>
+      <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-orange-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.7s'}}>
         <div className="flex items-start justify-between gap-6">
           <div className="flex items-start gap-4 flex-1">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-rose-400 rounded-full flex items-center justify-center flex-shrink-0">
@@ -185,7 +167,7 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeInUp" style={{animationDelay: '0.7s'}}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeInUp" style={{animationDelay: '0.8s'}}>
         <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 border border-amber-200/50 card-hover">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-white/80 rounded-full flex items-center justify-center">
@@ -227,7 +209,7 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
         </div>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-amber-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.8s'}}>
+      <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-amber-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.9s'}}>
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-6 h-6 text-white" />
