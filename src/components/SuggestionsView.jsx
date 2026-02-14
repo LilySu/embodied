@@ -65,10 +65,10 @@ function AlertCard({ alert, index }) {
         <div className="text-4xl flex-shrink-0 pt-1">{alert.emoji}</div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className={`text-[11px] uppercase tracking-widest font-semibold ${s.tag}`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
+            <span className={`text-sm uppercase tracking-widest font-semibold ${s.tag}`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
               {alert.label}
             </span>
-            <span className={`text-[11px] ${s.badge} px-2.5 py-0.5 rounded-full font-semibold`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
+            <span className={`text-sm ${s.badge} px-3 py-1 rounded-full font-semibold`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
               ↓ {alert.dropPercent}% this month
             </span>
           </div>
@@ -76,11 +76,11 @@ function AlertCard({ alert, index }) {
             {alert.exercise}
           </h4>
           {alert.prescription && (
-            <p className="text-sm font-medium text-amber-800 mb-1.5" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+            <p className="text-base font-medium text-amber-800 mb-1.5" style={{ fontFamily: 'Work Sans, sans-serif' }}>
               {alert.prescription}
             </p>
           )}
-          <p className="text-sm text-amber-700/90 leading-relaxed" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+          <p className="text-base text-amber-700/90 leading-relaxed" style={{ fontFamily: 'Work Sans, sans-serif' }}>
             {alert.description}
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
   return (
     <div className="space-y-6">
       <div className="space-y-4 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
-        <h3 className="text-xs uppercase tracking-widest text-rose-600 font-semibold px-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+        <h3 className="text-sm uppercase tracking-widest text-rose-600 font-semibold px-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
           Your Body This Month
         </h3>
         {BIOMARKER_ALERTS.map((alert, i) => (
