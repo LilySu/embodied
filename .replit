@@ -42,3 +42,4 @@ publicDir = "dist"
 
 [userenv.shared]
 GOOGLE_PLACES_API_KEY = "AIzaSyCHMSa1NNLhXZvV1XfNgf7MJRtJrpomX-M"
+VITE_GOOGLE_MAPS_KEY = "AIzaSyCHMSa1NNLhXZvV1XfNgf7MJRtJrpomX-M"
