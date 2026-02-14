@@ -146,7 +146,8 @@ export const systemMessages = [
     type: 'system',
     category: 'class',
     text: '🧘 Suggested Class Meetup: "Gentle Morning Flow" this Saturday at 9am at Sunrise Yoga Studio. Both of you are working on core strength — flowing together could be fun!',
-    time: 'Today, 8:00 AM'
+    time: 'Today, 8:00 AM',
+    imageKey: 'gentleFlow'
   },
   {
     id: 'sys-2',
@@ -160,7 +161,8 @@ export const systemMessages = [
     type: 'system',
     category: 'class',
     text: '💪 Partner Challenge: You both improved your plank hold by over 80%! Try a "Core & Balance" workshop together at the community center next week.',
-    time: 'Yesterday, 3:00 PM'
+    time: 'Yesterday, 3:00 PM',
+    imageKey: 'partnerChallenge'
   },
   {
     id: 'sys-4',

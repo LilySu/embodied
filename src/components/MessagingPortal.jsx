@@ -4,6 +4,13 @@ import { LineChart, Line, ResponsiveContainer, XAxis, Area, AreaChart } from 're
 import { getProgressData } from '../utils/calculations';
 import { SESSION_LIST } from '../data/sessions';
 import { initialChatMessages } from '../data/communityData';
+import gentleFlowImg from '@assets/dane-wetton-t1NEMSm1rgI-unsplash_1771111922313.jpg';
+import partnerChallengeImg from '@assets/jessica-streser-5ai6kpW4NOw-unsplash_1771111996592.jpg';
+
+const MESSAGE_IMAGES = {
+  gentleFlow: gentleFlowImg,
+  partnerChallenge: partnerChallengeImg,
+};
 
 function getTrajectoryChartData(sessionData) {
   const raw = getProgressData(sessionData);
@@ -60,8 +67,15 @@ function MessageBubble({ message }) {
             {isClass && <Dumbbell className="w-4 h-4 mt-0.5 flex-shrink-0 text-purple-500" />}
             {isMeal && <Utensils className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" />}
             {!isClass && !isMeal && <Users className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400" />}
-            <div>
+            <div className="flex-1 min-w-0">
               <p className="leading-relaxed">{message.text}</p>
+              {message.imageKey && MESSAGE_IMAGES[message.imageKey] && (
+                <img
+                  src={MESSAGE_IMAGES[message.imageKey]}
+                  alt=""
+                  className="w-full h-36 object-cover rounded-xl mt-2 border border-purple-200/40"
+                />
+              )}
               <p className="text-[10px] opacity-50 mt-1">{message.time}</p>
             </div>
           </div>
