@@ -6,7 +6,6 @@ import DashboardView from './components/DashboardView';
 import SuggestionsView from './components/SuggestionsView';
 import MetricsView from './components/MetricsView';
 import UploadView from './components/UploadView';
-import CommunityView from './components/CommunityView';
 import { defaultSessionData } from './data/defaultSessionData';
 import { calculateLongevityScore } from './utils/calculations';
 
@@ -53,9 +52,6 @@ export default function App() {
             plantGrowth={plantGrowth}
             setPlantGrowth={setPlantGrowth}
           />
-        )}
-        {currentView === 'community' && (
-          <CommunityView sessionData={sessionData} />
         )}
       </div>
     </div>
