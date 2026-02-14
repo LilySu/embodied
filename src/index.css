@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;600&family=Work+Sans:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes bloom {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes gentle-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+.animate-float { animation: gentleFloat 6s ease-in-out infinite; }
+.animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+.animate-bloom { animation: bloom 0.6s ease-out; }
+.animate-sway { animation: gentle-sway 4s ease-in-out infinite; }
+
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(180, 83, 9, 0.12);
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #b45309 0%, #ea580c 50%, #b45309 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
