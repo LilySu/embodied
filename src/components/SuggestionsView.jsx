@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, ChevronDown, ChevronUp, Navigation2, Clock, Star } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, Navigation2, Clock, Star } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
 
 const GOOGLE_MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
@@ -110,26 +109,20 @@ function RouteMapPreview({ location }) {
     : '';
 
   return (
-    <div className="mt-5 animate-fadeInUp">
-      <div className="flex items-center gap-2 mb-3">
-        <Navigation2 className="w-4 h-4 text-orange-500" />
-        <span className="text-sm font-semibold text-amber-800 uppercase tracking-wider" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-          Live Route Preview
-        </span>
-      </div>
-      <div className="relative rounded-2xl overflow-hidden border border-orange-200/60 shadow-sm">
+    <div className="mt-5">
+      <div className="relative rounded-3xl overflow-hidden border border-orange-200/60 shadow-sm">
         {GOOGLE_MAPS_KEY ? (
           <iframe
             src={mapSrc}
-            className="w-full h-48 md:h-56"
-            style={{ border: 0 }}
+            className="w-full"
+            style={{ border: 0, height: '200px' }}
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             title="Route to activity location"
           />
         ) : (
-          <div className="w-full h-48 md:h-56 bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+          <div className="w-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center" style={{ height: '200px' }}>
             <p className="text-amber-700 text-sm" style={{ fontFamily: 'Work Sans, sans-serif' }}>Map preview unavailable</p>
           </div>
         )}
@@ -164,7 +157,7 @@ function BackupLocationsSection() {
           <MapPin className="w-5 h-5 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-amber-900" style={{ fontFamily: 'Spectral, serif' }}>
-          Nearby Alternatives
+          Similar Studios Nearby
         </h3>
       </div>
 
@@ -188,10 +181,10 @@ function BackupLocationsSection() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {BACKUP_LOCATIONS.map((loc) => (
-          <div key={loc.name} className="bg-white/60 backdrop-blur-sm rounded-3xl p-5 border border-amber-200/50 card-hover">
+          <div key={loc.name} className="bg-amber-50 rounded-2xl p-5 border border-amber-200/40 card-hover">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-white/80 rounded-xl flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-5 h-5 text-orange-500" />
                 </div>
                 <h4 className="text-lg font-semibold text-amber-900" style={{ fontFamily: 'Spectral, serif' }}>
@@ -221,7 +214,6 @@ function BackupLocationsSection() {
 }
 
 export default function SuggestionsView({ currentDay, setCurrentDay, sessionData }) {
-  const [showMap, setShowMap] = useState(false);
   const activity = suggestions[currentDay].activity;
 
   return (
@@ -290,28 +282,19 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
               <p className="text-sm text-amber-700 mb-2" style={{fontFamily: 'Work Sans, sans-serif'}}>
                 📍 {activity.location}
               </p>
-              <p className="text-amber-800 font-light italic mb-3" style={{fontFamily: 'Work Sans, sans-serif'}}>
+              <p className="text-amber-800 font-light italic" style={{fontFamily: 'Work Sans, sans-serif'}}>
                 {activity.benefit}
               </p>
-              <button
-                onClick={() => setShowMap(!showMap)}
-                className="flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors"
-                style={{ fontFamily: 'Work Sans, sans-serif' }}
-              >
-                <MapPin className="w-4 h-4" />
-                {showMap ? 'Hide Route' : 'Show Route & Map'}
-                {showMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-              {showMap && <RouteMapPreview location={activity.location} />}
+              <RouteMapPreview location={activity.location} />
             </div>
           </div>
-          <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-rose-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all whitespace-nowrap">
+          <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-rose-500 text-white rounded-full text-sm font-medium hover:shadow-lg transition-all whitespace-nowrap self-start">
             Save Spot
           </button>
         </div>
       </div>
 
-      {showMap && <BackupLocationsSection />}
+      <BackupLocationsSection />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeInUp" style={{animationDelay: '0.8s'}}>
         <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 border border-amber-200/50 card-hover">
