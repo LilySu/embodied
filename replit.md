@@ -21,12 +21,14 @@ src/
     DashboardView.jsx    - Dashboard with charts and key metrics
     SuggestionsView.jsx  - Daily suggestions (activities, meals, micro-practices)
     MetricsView.jsx      - Detailed metrics across all categories
-    UploadView.jsx       - Excel file upload for tracking data
+    UploadView.jsx       - Excel file upload + spreadsheet display
+    SpreadsheetView.jsx  - Table rendering of biomarker data matching Excel layout
   data/
     defaultSessionData.js - Default biomarker data for sessions 1, 6, 12
     suggestions.js       - 3-day cadence suggestions (activities, meals, groceries)
   utils/
     calculations.js      - Score calculations, progress tracking, Excel parsing
+    spreadsheetParser.js - Excel parsing & default spreadsheet data builder
   App.jsx               - Main app component
   main.jsx              - Entry point
   index.css             - Tailwind + custom animations
@@ -37,5 +39,7 @@ src/
 - Deployment: Static site (dist/ directory)
 
 ## Recent Changes
+- 2026-02-14: Fixed spreadsheet formatting: context-aware percent display, correct negative change handling, no trailing spacer rows
+- 2026-02-14: Added SpreadsheetView component and spreadsheetParser utility for Excel-faithful data display
 - 2026-02-14: Set up React + Vite project from single Claude artifact JSX file
 - 2026-02-14: Broke 944-line monolithic JSX into 12 organized files
