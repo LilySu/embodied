@@ -1,4 +1,4 @@
-import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, Navigation2, Clock, Star } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, Navigation2, Clock, Star, Eye } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
 
 const GOOGLE_MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
@@ -10,8 +10,8 @@ const LOCATION_COORDS = {
 };
 
 const BACKUP_LOCATIONS = [
-  { name: 'Sunrise Yoga', distance: '0.8 miles', lat: 37.7720, lng: -122.4250, time: '10 min walk', matchScore: 92 },
-  { name: 'Downtown Pilates', distance: '1.2 miles', lat: 37.7800, lng: -122.4100, time: '5 min drive', matchScore: 87 },
+  { name: 'Sunrise Yoga', distance: '0.5 miles', lat: 37.7720, lng: -122.4250, time: '8 min walk', matchScore: 92 },
+  { name: 'Downtown Studio', distance: '0.9 miles', lat: 37.7800, lng: -122.4100, time: '4 min drive', matchScore: 87 },
 ];
 
 const BIOMARKER_ALERTS = [
@@ -110,7 +110,7 @@ function RouteMapPreview({ location }) {
 
   return (
     <div className="mt-5">
-      <div className="relative rounded-3xl overflow-hidden border border-orange-200/60 shadow-sm">
+      <div className="relative rounded-3xl overflow-hidden border border-orange-200/50 shadow-sm">
         {GOOGLE_MAPS_KEY ? (
           <iframe
             src={mapSrc}
@@ -141,7 +141,7 @@ function RouteMapPreview({ location }) {
   );
 }
 
-function BackupLocationsSection() {
+function BackupExerciseList() {
   const center = LOCATION_COORDS['Community Center'];
   const markersParam = BACKUP_LOCATIONS.map((loc, i) =>
     `&markers=color:red%7Clabel:${String.fromCharCode(65 + i)}%7C${loc.lat},${loc.lng}`
@@ -157,11 +157,11 @@ function BackupLocationsSection() {
           <MapPin className="w-5 h-5 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-amber-900" style={{ fontFamily: 'Spectral, serif' }}>
-          Similar Studios Nearby
+          Location Intelligence
         </h3>
       </div>
 
-      <div className="relative rounded-2xl overflow-hidden border border-amber-200/50 shadow-sm mb-5">
+      <div className="relative rounded-3xl overflow-hidden border border-orange-200/50 shadow-sm mb-5">
         {GOOGLE_MAPS_KEY ? (
           <iframe
             src={mapSrc}
@@ -196,15 +196,21 @@ function BackupLocationsSection() {
                 {loc.matchScore}%
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm text-amber-700 flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                <Navigation2 className="w-3.5 h-3.5 text-amber-500" />
-                {loc.distance}
-              </span>
-              <span className="text-sm bg-orange-100/80 text-orange-700 px-3 py-1 rounded-full font-medium flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                <Clock className="w-3.5 h-3.5" />
-                {loc.time}
-              </span>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-amber-700 flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+                  <Navigation2 className="w-3.5 h-3.5 text-amber-500" />
+                  {loc.distance}
+                </span>
+                <span className="text-sm bg-orange-100/80 text-orange-700 px-3 py-1 rounded-full font-medium flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+                  <Clock className="w-3.5 h-3.5" />
+                  {loc.time}
+                </span>
+              </div>
+              <button className="flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:text-orange-700 bg-white/80 hover:bg-white px-3 py-1.5 rounded-full border border-orange-200/60 transition-all" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+                <Eye className="w-3.5 h-3.5" />
+                Quick View
+              </button>
             </div>
           </div>
         ))}
@@ -294,7 +300,7 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
         </div>
       </div>
 
-      <BackupLocationsSection />
+      <BackupExerciseList />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeInUp" style={{animationDelay: '0.8s'}}>
         <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 border border-amber-200/50 card-hover">
