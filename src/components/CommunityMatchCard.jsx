@@ -1,6 +1,7 @@
 import { Users, MapPin, ArrowRight, TrendingUp } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis } from 'recharts';
 import { getProgressData } from '../utils/calculations';
+import mayaProfileImg from '@assets/maria-lupan-Omae6x2qFTU-unsplash_1771112352871.png';
 
 function getOverlayData(userSessionData, matchSessionData) {
   const userData = getProgressData(userSessionData);
@@ -27,9 +28,11 @@ export default function CommunityMatchCard({ matchedUser, sessionData, onOpenCha
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-purple-200 to-rose-200 rounded-2xl flex items-center justify-center text-2xl">
-              {matchedUser.avatar}
-            </div>
+            <img
+              src={mayaProfileImg}
+              alt={matchedUser.name}
+              className="w-20 h-20 rounded-2xl object-cover border-2 border-purple-200/60 shadow-sm"
+            />
             <div>
               <h4 className="text-lg font-semibold text-amber-900" style={{fontFamily: 'Spectral, serif'}}>
                 {matchedUser.name}
