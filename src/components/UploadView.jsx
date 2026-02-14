@@ -1,34 +1,118 @@
+import { useState, useMemo } from 'react';
 import { Upload } from 'lucide-react';
+import SpreadsheetView from './SpreadsheetView';
+import { parseExcelToSpreadsheet, buildSpreadsheetFromSessionData } from '../utils/spreadsheetParser';
 import * as XLSX from 'xlsx';
-import { parseSessionFromExcel } from '../utils/calculations';
 
-export default function UploadView({ setSessionData, plantGrowth, setPlantGrowth }) {
+export default function UploadView({ sessionData, setSessionData, plantGrowth, setPlantGrowth }) {
+  const [uploadedSpreadsheet, setUploadedSpreadsheet] = useState(null);
+  const [hasUploaded, setHasUploaded] = useState(false);
+
+  const spreadsheetData = useMemo(() => {
+    return uploadedSpreadsheet || buildSpreadsheetFromSessionData(sessionData);
+  }, [uploadedSpreadsheet, sessionData]);
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const data = evt.target.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+    try {
+      const rows = await parseExcelToSpreadsheet(file);
+      setUploadedSpreadsheet(rows);
+      setHasUploaded(true);
 
-        if (jsonData.length > 0) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const data = evt.target.result;
+          const workbook = XLSX.read(data, { type: 'binary' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const range = XLSX.utils.decode_range(firstSheet['!ref']);
+
+          const getCell = (r, c) => {
+            const addr = XLSX.utils.encode_cell({ r, c });
+            const cell = firstSheet[addr];
+            return cell ? cell.v : null;
+          };
+
+          const metricMap = {};
+          for (let r = 1; r <= range.e.r; r++) {
+            const metric = getCell(r, 0);
+            if (!metric || typeof metric !== 'string') continue;
+            const s1 = getCell(r, 1);
+            const s6 = getCell(r, 2);
+            const s12 = getCell(r, 3);
+            if (s1 !== null || s6 !== null || s12 !== null) {
+              metricMap[metric.toLowerCase()] = { s1, s6, s12 };
+            }
+          }
+
+          const map = (label, fallbackKey) => {
+            const entry = metricMap[label.toLowerCase()];
+            return {
+              s1: entry?.s1 ?? sessionData.session1[fallbackKey],
+              s6: entry?.s6 ?? sessionData.session6[fallbackKey],
+              s12: entry?.s12 ?? sessionData.session12[fallbackKey],
+            };
+          };
+
+          const m = {
+            plankHold: map('plank hold (seconds)', 'plankHold'),
+            sidePlankL: map('side plank hold l (seconds)', 'sidePlankL'),
+            sidePlankR: map('side plank hold r (seconds)', 'sidePlankR'),
+            boatPose: map('boat pose hold (seconds)', 'boatPose'),
+            deadBugQuality: map('dead bug quality (1-10)', 'deadBugQuality'),
+            downwardDog: map('downward dog hold (seconds)', 'downwardDog'),
+            chaturangaQuality: map('chaturanga quality (1-10)', 'chaturangaQuality'),
+            handFloorConnection: map('hand-floor connection (1-10)', 'handFloorConnection'),
+            singleLegL: map('single leg stand l (seconds)', 'singleLegL'),
+            singleLegR: map('single leg stand r (seconds)', 'singleLegR'),
+            treePoseL: map('tree pose l (seconds)', 'treePoseL'),
+            treePoseR: map('tree pose r (seconds)', 'treePoseR'),
+            eyesClosedBalance: map('eyes-closed balance (seconds)', 'eyesClosedBalance'),
+            footPainLevel: map('right foot pain level (1-10)', 'footPainLevel'),
+            weightDistribution: map('weight distribution l/r (%)', 'weightDistribution'),
+            archEngagement: map('arch engagement quality (1-10)', 'archEngagement'),
+            sunSalAConfidence: map('sun sal a confidence (1-10)', 'sunSalAConfidence'),
+            sunSalBConfidence: map('sun sal b confidence (1-10)', 'sunSalBConfidence'),
+            sunSalAFlow: map('sun sal a flow quality (1-10)', 'sunSalAFlow'),
+            sunSalBFlow: map('sun sal b flow quality (1-10)', 'sunSalBFlow'),
+            bodyAwareness: map('body awareness (1-10)', 'bodyAwareness'),
+            movementConfidence: map('movement confidence (1-10)', 'movementConfidence'),
+            energyLevel: map('energy level (1-10)', 'energyLevel'),
+            wellbeing: map('overall wellbeing (1-10)', 'wellbeing'),
+          };
+
+          const buildSession = (sessionKey) => {
+            const result = {};
+            for (const [key, vals] of Object.entries(m)) {
+              let v = vals[sessionKey];
+              if (v !== null && v !== undefined) {
+                v = parseFloat(v);
+                if (key === 'weightDistribution' && v < 1) v = v * 100;
+                result[key] = isNaN(v) ? 0 : v;
+              } else {
+                result[key] = 0;
+              }
+            }
+            return result;
+          };
+
           setSessionData({
-            session1: parseSessionFromExcel(jsonData[0], 'S1'),
-            session6: parseSessionFromExcel(jsonData[0], 'S6'),
-            session12: parseSessionFromExcel(jsonData[0], 'S12'),
+            session1: buildSession('s1'),
+            session6: buildSession('s6'),
+            session12: buildSession('s12'),
           });
           setPlantGrowth(Math.min(100, plantGrowth + 20));
+        } catch (error) {
+          console.error('Error updating session data:', error);
         }
-      } catch (error) {
-        console.error('Error parsing Excel file:', error);
-        alert('Having trouble reading that file. Make sure it follows the Embodied Intelligence Biomarker template!');
-      }
-    };
-    reader.readAsBinaryString(file);
+      };
+      reader.readAsBinaryString(file);
+    } catch (error) {
+      console.error('Error parsing Excel file:', error);
+      alert('Having trouble reading that file. Make sure it follows the Embodied Intelligence Biomarker template!');
+    }
   };
 
   return (
@@ -38,12 +122,12 @@ export default function UploadView({ setSessionData, plantGrowth, setPlantGrowth
           Upload Your Tracking Data
         </h3>
 
-        <div className="border-2 border-dashed border-orange-300 rounded-2xl p-12 bg-gradient-to-br from-amber-50 to-orange-50 hover:border-orange-400 transition-all group">
-          <Upload className="w-16 h-16 text-orange-400 mb-4 mx-auto group-hover:scale-110 transition-transform" />
+        <div className="border-2 border-dashed border-orange-300 rounded-2xl p-8 bg-gradient-to-br from-amber-50 to-orange-50 hover:border-orange-400 transition-all group">
+          <Upload className="w-12 h-12 text-orange-400 mb-3 mx-auto group-hover:scale-110 transition-transform" />
           <p className="text-lg font-medium text-amber-900 mb-2 text-center" style={{fontFamily: 'Work Sans, sans-serif'}}>
             Drop your Excel file here
           </p>
-          <p className="text-sm text-amber-700 mb-6 text-center" style={{fontFamily: 'Work Sans, sans-serif'}}>
+          <p className="text-sm text-amber-700 mb-4 text-center" style={{fontFamily: 'Work Sans, sans-serif'}}>
             or click to browse
           </p>
           <input
@@ -54,12 +138,19 @@ export default function UploadView({ setSessionData, plantGrowth, setPlantGrowth
             style={{fontFamily: 'Work Sans, sans-serif'}}
           />
         </div>
+      </div>
 
-        <div className="mt-8 p-6 bg-gradient-to-br from-rose-50 to-orange-50 rounded-2xl">
-          <p className="text-sm text-amber-800 text-center" style={{fontFamily: 'Work Sans, sans-serif'}}>
-            Use the Embodied Intelligence Biomarker template with columns for all metrics across Sessions 1, 6, and 12
-          </p>
-        </div>
+      <div>
+        <h3 className="text-xl text-amber-900 font-light mb-4 px-1" style={{fontFamily: 'Spectral, serif'}}>
+          {hasUploaded ? 'Your Uploaded Data' : 'Biomarker Progress Tracking'}
+        </h3>
+        <SpreadsheetView spreadsheetData={spreadsheetData} sessionData={sessionData} />
+      </div>
+
+      <div className="p-6 bg-gradient-to-br from-rose-50 to-orange-50 rounded-2xl">
+        <p className="text-sm text-amber-800 text-center" style={{fontFamily: 'Work Sans, sans-serif'}}>
+          Use the Embodied Intelligence Biomarker template with columns: Metric, Session 1, Session 6, Session 12, Change, % Change
+        </p>
       </div>
     </div>
   );

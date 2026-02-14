@@ -47,6 +47,7 @@ export default function App() {
         )}
         {currentView === 'upload' && (
           <UploadView
+            sessionData={sessionData}
             setSessionData={setSessionData}
             plantGrowth={plantGrowth}
             setPlantGrowth={setPlantGrowth}
