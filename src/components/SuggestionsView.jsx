@@ -2,6 +2,8 @@ import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
 import directionsMap from '@assets/Screenshot_2026-02-14_at_3.26.16_PM_1771111584615.png';
 import alternativesMap from '@assets/Screenshot_2026-02-14_at_3.26.59_PM_1771111623310.png';
+import harvestBowlImg from '@assets/j-g-1yDF6qRULCY-unsplash_1771111819808.jpg';
+import purplePotatoesImg from '@assets/zoshua-colah-Hz5Q8RstsNg-unsplash_1771111849811.jpg';
 
 const BIOMARKER_ALERTS = [
   {
@@ -218,6 +220,11 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
           <p className="text-sm text-amber-800 font-light leading-relaxed" style={{fontFamily: 'Work Sans, sans-serif'}}>
             {suggestions[currentDay].meal.why}
           </p>
+          <img
+            src={harvestBowlImg}
+            alt="Harvest bowl meal"
+            className="w-full h-40 object-cover rounded-2xl mt-4 border border-amber-200/50"
+          />
         </div>
 
         <div className="bg-gradient-to-br from-rose-100 to-orange-100 rounded-3xl p-6 border border-rose-200/50 card-hover">
@@ -238,6 +245,11 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
           <p className="text-sm text-amber-800 font-light leading-relaxed" style={{fontFamily: 'Work Sans, sans-serif'}}>
             {suggestions[currentDay].grocery.why}
           </p>
+          <img
+            src={purplePotatoesImg}
+            alt="Purple potatoes"
+            className="w-full h-40 object-cover rounded-2xl mt-4 border border-rose-200/50"
+          />
         </div>
       </div>
 
