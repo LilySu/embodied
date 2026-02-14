@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, ChevronDown, ChevronUp, Navigation2, Clock } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin, ChevronDown, ChevronUp, Navigation2, Clock, Star } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
 
 const GOOGLE_MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || '';
@@ -11,8 +11,8 @@ const LOCATION_COORDS = {
 };
 
 const BACKUP_LOCATIONS = [
-  { name: 'Parkside Pilates', distance: '0.8 miles away', lat: 37.7720, lng: -122.4250, time: '12 min walk' },
-  { name: 'Core Yoga Hub', distance: '1.2 miles away', lat: 37.7800, lng: -122.4100, time: '5 min drive' },
+  { name: 'Sunrise Yoga', distance: '0.8 miles', lat: 37.7720, lng: -122.4250, time: '10 min walk', matchScore: 92 },
+  { name: 'Downtown Pilates', distance: '1.2 miles', lat: 37.7800, lng: -122.4100, time: '5 min drive', matchScore: 87 },
 ];
 
 const BIOMARKER_ALERTS = [
@@ -136,7 +136,7 @@ function RouteMapPreview({ location }) {
         <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-orange-200/40 flex items-center gap-2">
           <Clock className="w-4 h-4 text-orange-500" />
           <span className="text-sm font-semibold text-amber-800" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-            10 min walk
+            10 min arrival
           </span>
         </div>
       </div>
@@ -186,24 +186,32 @@ function BackupLocationsSection() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {BACKUP_LOCATIONS.map((loc) => (
-          <div key={loc.name} className="bg-gradient-to-br from-amber-50/80 to-orange-50/80 rounded-2xl p-4 border border-amber-200/40 flex items-start gap-3">
-            <div className="w-9 h-9 bg-white/80 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-              <MapPin className="w-4 h-4 text-orange-500" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="text-base font-semibold text-amber-900 mb-0.5" style={{ fontFamily: 'Spectral, serif' }}>
-                {loc.name}
-              </h4>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm text-amber-600" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                  {loc.distance}
-                </span>
-                <span className="text-xs bg-orange-200/60 text-orange-700 px-2 py-0.5 rounded-full font-medium" style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                  {loc.time}
-                </span>
+          <div key={loc.name} className="bg-white/60 backdrop-blur-sm rounded-3xl p-5 border border-amber-200/50 card-hover">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-orange-500" />
+                </div>
+                <h4 className="text-lg font-semibold text-amber-900" style={{ fontFamily: 'Spectral, serif' }}>
+                  {loc.name}
+                </h4>
               </div>
+              <div className="bg-gradient-to-r from-purple-500 to-rose-500 text-white rounded-full px-3 py-1 text-sm font-semibold flex items-center gap-1 flex-shrink-0">
+                <Star className="w-3.5 h-3.5" />
+                {loc.matchScore}%
+              </div>
+            </div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-sm text-amber-700 flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+                <Navigation2 className="w-3.5 h-3.5 text-amber-500" />
+                {loc.distance}
+              </span>
+              <span className="text-sm bg-orange-100/80 text-orange-700 px-3 py-1 rounded-full font-medium flex items-center gap-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+                <Clock className="w-3.5 h-3.5" />
+                {loc.time}
+              </span>
             </div>
           </div>
         ))}
