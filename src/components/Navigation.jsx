@@ -3,6 +3,7 @@ const tabs = [
   { key: 'suggestions', label: 'For You' },
   { key: 'metrics', label: 'All Metrics' },
   { key: 'upload', label: 'Upload' },
+  { key: 'community', label: 'Community' },
 ];
 
 export default function Navigation({ currentView, setCurrentView }) {

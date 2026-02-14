@@ -258,6 +258,10 @@ communityRoutes.post("/matches/:matchId/messages", async (req, res) => {
     const { matchId } = req.params;
     const { content } = req.body;
 
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: "Message content is required" });
+    }
+
     const [match] = await db
       .select()
       .from(matches)
