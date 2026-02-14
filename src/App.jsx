@@ -56,7 +56,7 @@ export default function App() {
               />
             )}
             {currentView === 'suggestions' && (
-              <SuggestionsView currentDay={currentDay} setCurrentDay={setCurrentDay} />
+              <SuggestionsView currentDay={currentDay} setCurrentDay={setCurrentDay} sessionData={sessionData} />
             )}
             {currentView === 'metrics' && (
               <MetricsView sessionData={sessionData} currentSession={currentSession} />

@@ -40,6 +40,12 @@
   box-shadow: 0 20px 40px rgba(180, 83, 9, 0.12);
 }
 
+@keyframes alertPulse {
+  0%, 100% { border-color: rgba(251, 113, 133, 0.4); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.15); }
+  50% { border-color: rgba(251, 113, 133, 0.8); box-shadow: 0 0 12px 2px rgba(251, 113, 133, 0.18); }
+}
+.animate-alertPulse { animation: alertPulse 2.5s ease-in-out infinite; }
+
 .shimmer-text {
   background: linear-gradient(90deg, #b45309 0%, #ea580c 50%, #b45309 100%);
   background-size: 200% auto;

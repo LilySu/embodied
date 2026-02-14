@@ -1,9 +1,124 @@
-import { Leaf, Calendar, Heart, Sprout, Sparkles } from 'lucide-react';
+import { Leaf, Calendar, Heart, Sprout, Sparkles, AlertTriangle } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
 
-export default function SuggestionsView({ currentDay, setCurrentDay }) {
+const ALERT_CHECKS = [
+  {
+    metric: 'downwardDog',
+    label: 'Grip Strength',
+    threshold: 0.10,
+    exercise: 'Downward Facing Dog',
+    description: 'Holding this pose rebuilds the hand-to-floor connection and strengthens your grip endurance.',
+  },
+  {
+    metric: 'plankHold',
+    label: 'Core Stability',
+    threshold: 0.10,
+    exercise: 'Dead Bug',
+    description: 'This focuses on core engagement quality to rebuild the stability needed for longer holds.',
+  },
+  {
+    metric: 'singleLegL',
+    label: 'Balance & Symmetry',
+    threshold: 0.10,
+    exercise: 'Tree Pose (L)',
+    description: 'Practicing a static balance pose helps recalibrate your stability and weight distribution.',
+  },
+  {
+    metrics: ['wellbeing', 'energyLevel'],
+    label: 'Energy & Vitality',
+    threshold: 0.15,
+    exercise: 'Gentle Side Plank',
+    description: 'A shorter, focused effort can help re-engage the body\'s awareness without causing further fatigue.',
+  },
+];
+
+function detectAlerts(sessionData) {
+  if (!sessionData?.cp5 || !sessionData?.cp4) return [];
+
+  const cp5 = sessionData.cp5;
+  const cp4 = sessionData.cp4;
+  const triggered = [];
+
+  for (const check of ALERT_CHECKS) {
+    if (check.metrics) {
+      const drops = check.metrics.map(m => {
+        const prev = cp4[m];
+        const curr = cp5[m];
+        if (!prev || prev === 0) return 0;
+        return (prev - curr) / prev;
+      });
+      const avgDrop = drops.reduce((a, b) => a + b, 0) / drops.length;
+      if (avgDrop >= check.threshold) {
+        triggered.push({
+          ...check,
+          dropPercent: Math.round(avgDrop * 100),
+        });
+      }
+    } else {
+      const prev = cp4[check.metric];
+      const curr = cp5[check.metric];
+      if (!prev || prev === 0) continue;
+      const drop = (prev - curr) / prev;
+      if (drop >= check.threshold) {
+        triggered.push({
+          ...check,
+          dropPercent: Math.round(drop * 100),
+        });
+      }
+    }
+  }
+
+  return triggered;
+}
+
+function AlertCard({ alert, index }) {
+  return (
+    <div
+      className="bg-gradient-to-br from-rose-50/90 to-amber-50/90 rounded-2xl p-5 border-2 border-rose-300 animate-alertPulse animate-fadeInUp"
+      style={{ animationDelay: `${index * 0.1}s` }}
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <AlertTriangle className="w-5 h-5 text-rose-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs uppercase tracking-wider font-semibold text-rose-600" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              {alert.label} Alert
+            </span>
+            <span className="text-xs bg-rose-200/60 text-rose-700 px-2 py-0.5 rounded-full font-medium" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              -{alert.dropPercent}%
+            </span>
+          </div>
+          <p className="text-amber-900 text-sm leading-relaxed mb-1" style={{ fontFamily: 'Spectral, serif' }}>
+            Your {alert.label.toLowerCase()} is lower by {alert.dropPercent}% today.
+            {' '}Suggested exercise: <span className="font-semibold text-amber-800">{alert.exercise}</span>.
+          </p>
+          <p className="text-xs text-amber-700/80 leading-relaxed" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+            {alert.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function SuggestionsView({ currentDay, setCurrentDay, sessionData }) {
+  const alerts = detectAlerts(sessionData);
+
   return (
     <div className="space-y-6">
+      {alerts.length > 0 && (
+        <div className="space-y-3 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+          <h3 className="text-xs uppercase tracking-widest text-rose-600 font-semibold px-1" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+            Biomarker Alerts
+          </h3>
+          {alerts.map((alert, i) => (
+            <AlertCard key={alert.label} alert={alert} index={i} />
+          ))}
+        </div>
+      )}
+
       <div className="flex justify-center gap-3 mb-6 animate-fadeInUp" style={{animationDelay: '0.4s'}}>
         {[
           { key: 'day1', label: 'Today' },

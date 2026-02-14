@@ -104,15 +104,15 @@ export const defaultSessionData = {
     wellbeing: 7
   },
   cp5: {
-    plankHold: 27,
+    plankHold: 20,
     sidePlankL: 14,
     sidePlankR: 13,
     boatPose: 30,
     deadBugQuality: 8,
-    downwardDog: 35,
+    downwardDog: 30,
     chaturangaQuality: 7,
     handFloorConnection: 4,
-    singleLegL: 10,
+    singleLegL: 8,
     singleLegR: 9,
     treePoseL: 18,
     treePoseR: 17,
@@ -126,7 +126,7 @@ export const defaultSessionData = {
     sunSalBFlow: 6,
     bodyAwareness: 7,
     movementConfidence: 6,
-    energyLevel: 8,
-    wellbeing: 9
+    energyLevel: 5.5,
+    wellbeing: 5.5
   }
 };
