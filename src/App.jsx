@@ -6,7 +6,9 @@ import DashboardView from './components/DashboardView';
 import SuggestionsView from './components/SuggestionsView';
 import MetricsView from './components/MetricsView';
 import UploadView from './components/UploadView';
+import MessagingPortal from './components/MessagingPortal';
 import { defaultSessionData } from './data/defaultSessionData';
+import { matchedUser } from './data/communityData';
 import { calculateLongevityScore } from './utils/calculations';
 
 export default function App() {
@@ -15,10 +17,19 @@ export default function App() {
   const [currentSession, setCurrentSession] = useState('session12');
   const [plantGrowth, setPlantGrowth] = useState(75);
   const [currentDay, setCurrentDay] = useState('day1');
+  const [showChat, setShowChat] = useState(false);
 
   const longevityScore = calculateLongevityScore(sessionData, currentSession);
   const session1Score = calculateLongevityScore(sessionData, 'session1');
   const session12Score = calculateLongevityScore(sessionData, 'session12');
+
+  const handleOpenChat = () => {
+    setShowChat(true);
+  };
+
+  const handleBackFromChat = () => {
+    setShowChat(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 p-4 md:p-8">
@@ -30,27 +41,41 @@ export default function App() {
           session12Score={session12Score}
           plantGrowth={plantGrowth}
         />
-        <Navigation currentView={currentView} setCurrentView={setCurrentView} />
 
-        {currentView === 'dashboard' && (
-          <DashboardView
+        {!showChat && (
+          <>
+            <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+
+            {currentView === 'dashboard' && (
+              <DashboardView
+                sessionData={sessionData}
+                currentSession={currentSession}
+                setCurrentSession={setCurrentSession}
+                onOpenChat={handleOpenChat}
+              />
+            )}
+            {currentView === 'suggestions' && (
+              <SuggestionsView currentDay={currentDay} setCurrentDay={setCurrentDay} />
+            )}
+            {currentView === 'metrics' && (
+              <MetricsView sessionData={sessionData} currentSession={currentSession} />
+            )}
+            {currentView === 'upload' && (
+              <UploadView
+                sessionData={sessionData}
+                setSessionData={setSessionData}
+                plantGrowth={plantGrowth}
+                setPlantGrowth={setPlantGrowth}
+              />
+            )}
+          </>
+        )}
+
+        {showChat && (
+          <MessagingPortal
+            matchedUser={matchedUser}
             sessionData={sessionData}
-            currentSession={currentSession}
-            setCurrentSession={setCurrentSession}
-          />
-        )}
-        {currentView === 'suggestions' && (
-          <SuggestionsView currentDay={currentDay} setCurrentDay={setCurrentDay} />
-        )}
-        {currentView === 'metrics' && (
-          <MetricsView sessionData={sessionData} currentSession={currentSession} />
-        )}
-        {currentView === 'upload' && (
-          <UploadView
-            sessionData={sessionData}
-            setSessionData={setSessionData}
-            plantGrowth={plantGrowth}
-            setPlantGrowth={setPlantGrowth}
+            onBack={handleBackFromChat}
           />
         )}
       </div>
