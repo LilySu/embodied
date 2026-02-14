@@ -1,7 +1,9 @@
 import { TrendingUp } from 'lucide-react';
 import GrowingPlant from './GrowingPlant';
 
-export default function LongevityScoreHero({ longevityScore, session1Score, session12Score, plantGrowth }) {
+export default function LongevityScoreHero({ longevityScore, firstScore, lastScore, plantGrowth }) {
+  const pointsGained = lastScore - firstScore;
+
   return (
     <div className="mb-8 animate-fadeInUp" style={{animationDelay: '0.2s'}}>
       <div className="bg-gradient-to-br from-orange-100 to-rose-100 rounded-3xl p-8 border border-orange-200/50 card-hover relative overflow-hidden">
@@ -19,7 +21,7 @@ export default function LongevityScoreHero({ longevityScore, session1Score, sess
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-green-600" />
               <span className="text-lg text-green-600 font-medium" style={{fontFamily: 'Work Sans, sans-serif'}}>
-                +{session12Score - session1Score} points since Session 1
+                +{pointsGained} points over 14 days
               </span>
             </div>
             <p className="text-xl text-amber-800 font-light italic" style={{fontFamily: 'Spectral, serif'}}>

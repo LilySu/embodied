@@ -1,7 +1,9 @@
+import { SESSION_LIST, FIRST_SESSION, LAST_SESSION } from '../data/sessions';
+
 export function calculateProgress(sessionData, metric) {
-  const s1 = sessionData.session1[metric];
-  const s12 = sessionData.session12[metric];
-  const change = s12 - s1;
+  const s1 = sessionData[FIRST_SESSION][metric];
+  const sLast = sessionData[LAST_SESSION][metric];
+  const change = sLast - s1;
   const percentChange = s1 > 0 ? ((change / s1) * 100).toFixed(1) : 0;
   return { change, percentChange };
 }
@@ -19,26 +21,12 @@ export function calculateLongevityScore(sessionData, session) {
 }
 
 export function getProgressData(sessionData) {
-  return [
-    {
-      session: 'Session 1',
-      'Core Strength': (sessionData.session1.plankHold / 60 * 10).toFixed(1),
-      'Balance': (sessionData.session1.singleLegL / 30 * 10).toFixed(1),
-      'Subjective': sessionData.session1.wellbeing,
-    },
-    {
-      session: 'Session 6',
-      'Core Strength': (sessionData.session6.plankHold / 60 * 10).toFixed(1),
-      'Balance': (sessionData.session6.singleLegL / 30 * 10).toFixed(1),
-      'Subjective': sessionData.session6.wellbeing,
-    },
-    {
-      session: 'Session 12',
-      'Core Strength': (sessionData.session12.plankHold / 60 * 10).toFixed(1),
-      'Balance': (sessionData.session12.singleLegL / 30 * 10).toFixed(1),
-      'Subjective': sessionData.session12.wellbeing,
-    },
-  ];
+  return SESSION_LIST.map(s => ({
+    session: s.label,
+    'Core Strength': (sessionData[s.key].plankHold / 60 * 10).toFixed(1),
+    'Balance': (sessionData[s.key].singleLegL / 30 * 10).toFixed(1),
+    'Subjective': sessionData[s.key].wellbeing,
+  }));
 }
 
 export function parseSessionFromExcel(row, prefix) {

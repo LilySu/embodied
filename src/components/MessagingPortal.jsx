@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Send, Users, Utensils, Dumbbell } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis, Area, AreaChart } from 'recharts';
 import { getProgressData } from '../utils/calculations';
+import { SESSION_LIST } from '../data/sessions';
 import { initialChatMessages } from '../data/communityData';
 
 function getTrajectoryChartData(sessionData) {
@@ -37,8 +38,8 @@ function TrajectoryMiniChart({ sessionData, label, color, bgGradient }) {
         </AreaChart>
       </ResponsiveContainer>
       <div className="flex justify-between mt-1">
-        <span className="text-[10px] opacity-50" style={{color}}>Session 1</span>
-        <span className="text-[10px] opacity-50" style={{color}}>Session 12</span>
+        <span className="text-[10px] opacity-50" style={{color}}>{SESSION_LIST[0].label}</span>
+        <span className="text-[10px] opacity-50" style={{color}}>{SESSION_LIST[SESSION_LIST.length - 1].label}</span>
       </div>
     </div>
   );

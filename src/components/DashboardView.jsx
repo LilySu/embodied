@@ -1,6 +1,7 @@
 import { Activity, Target, Zap, Heart, Sparkles, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { calculateProgress, getProgressData } from '../utils/calculations';
+import { SESSION_LIST, FIRST_SESSION, LAST_SESSION } from '../data/sessions';
 import CommunityMatchCard from './CommunityMatchCard';
 import { matchedUser } from '../data/communityData';
 
@@ -9,18 +10,19 @@ export default function DashboardView({ sessionData, currentSession, setCurrentS
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-center gap-3 mb-6 animate-fadeInUp" style={{animationDelay: '0.4s'}}>
-        {['session1', 'session6', 'session12'].map(session => (
+      <div className="flex justify-center gap-2 mb-6 animate-fadeInUp" style={{animationDelay: '0.4s'}}>
+        {SESSION_LIST.map(s => (
           <button
-            key={session}
-            onClick={() => setCurrentSession(session)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              currentSession === session
+            key={s.key}
+            onClick={() => setCurrentSession(s.key)}
+            title={s.fullLabel}
+            className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all ${
+              currentSession === s.key
                 ? 'bg-amber-600 text-white'
                 : 'bg-white/60 text-amber-700 hover:bg-white/80'
             }`}
           >
-            Session {session.replace('session', '')}
+            {s.label}
           </button>
         ))}
       </div>
@@ -113,7 +115,7 @@ export default function DashboardView({ sessionData, currentSession, setCurrentS
               Your Progress Story
             </h3>
             <p className="text-2xl text-amber-900 font-light leading-relaxed" style={{fontFamily: 'Spectral, serif'}}>
-              Your plank hold nearly doubled from {sessionData.session1.plankHold}s to {sessionData.session12.plankHold}s—like a steady oak growing stronger! Your wellbeing jumped from {sessionData.session1.wellbeing} to {sessionData.session12.wellbeing}, and your foot pain decreased from {sessionData.session1.footPainLevel} to {sessionData.session12.footPainLevel}. Every session, you're building a foundation for decades of vibrant living. 🌳
+              Your plank hold nearly doubled from {sessionData[FIRST_SESSION].plankHold}s to {sessionData[LAST_SESSION].plankHold}s—like a steady oak growing stronger! Your wellbeing jumped from {sessionData[FIRST_SESSION].wellbeing} to {sessionData[LAST_SESSION].wellbeing}, and your foot pain decreased from {sessionData[FIRST_SESSION].footPainLevel} to {sessionData[LAST_SESSION].footPainLevel}. Every session, you're building a foundation for decades of vibrant living. 🌳
             </p>
           </div>
         </div>

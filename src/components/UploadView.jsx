@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Upload } from 'lucide-react';
 import SpreadsheetView from './SpreadsheetView';
 import { parseExcelToSpreadsheet, buildSpreadsheetFromSessionData } from '../utils/spreadsheetParser';
+import { SESSION_LIST } from '../data/sessions';
 import * as XLSX from 'xlsx';
 
 export default function UploadView({ sessionData, setSessionData, plantGrowth, setPlantGrowth }) {
@@ -39,21 +40,23 @@ export default function UploadView({ sessionData, setSessionData, plantGrowth, s
           for (let r = 1; r <= range.e.r; r++) {
             const metric = getCell(r, 0);
             if (!metric || typeof metric !== 'string') continue;
-            const s1 = getCell(r, 1);
-            const s6 = getCell(r, 2);
-            const s12 = getCell(r, 3);
-            if (s1 !== null || s6 !== null || s12 !== null) {
-              metricMap[metric.toLowerCase()] = { s1, s6, s12 };
+            const values = {};
+            SESSION_LIST.forEach((s, i) => {
+              values[s.key] = getCell(r, i + 1);
+            });
+            const hasData = SESSION_LIST.some(s => values[s.key] !== null);
+            if (hasData) {
+              metricMap[metric.toLowerCase()] = values;
             }
           }
 
           const map = (label, fallbackKey) => {
             const entry = metricMap[label.toLowerCase()];
-            return {
-              s1: entry?.s1 ?? sessionData.session1[fallbackKey],
-              s6: entry?.s6 ?? sessionData.session6[fallbackKey],
-              s12: entry?.s12 ?? sessionData.session12[fallbackKey],
-            };
+            const result = {};
+            SESSION_LIST.forEach(s => {
+              result[s.key] = entry?.[s.key] ?? sessionData[s.key][fallbackKey];
+            });
+            return result;
           };
 
           const m = {
@@ -98,11 +101,11 @@ export default function UploadView({ sessionData, setSessionData, plantGrowth, s
             return result;
           };
 
-          setSessionData({
-            session1: buildSession('s1'),
-            session6: buildSession('s6'),
-            session12: buildSession('s12'),
+          const newData = {};
+          SESSION_LIST.forEach(s => {
+            newData[s.key] = buildSession(s.key);
           });
+          setSessionData(newData);
           setPlantGrowth(Math.min(100, plantGrowth + 20));
         } catch (error) {
           console.error('Error updating session data:', error);
@@ -149,7 +152,7 @@ export default function UploadView({ sessionData, setSessionData, plantGrowth, s
 
       <div className="p-6 bg-gradient-to-br from-rose-50 to-orange-50 rounded-2xl">
         <p className="text-sm text-amber-800 text-center" style={{fontFamily: 'Work Sans, sans-serif'}}>
-          Use the Embodied Intelligence Biomarker template with columns: Metric, Session 1, Session 6, Session 12, Change, % Change
+          Use the Embodied Intelligence Biomarker template with columns: Metric, then your checkpoint session columns, Change, % Change
         </p>
       </div>
     </div>

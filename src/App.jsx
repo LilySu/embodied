@@ -9,19 +9,20 @@ import UploadView from './components/UploadView';
 import MessagingPortal from './components/MessagingPortal';
 import { defaultSessionData } from './data/defaultSessionData';
 import { matchedUser } from './data/communityData';
+import { FIRST_SESSION, LAST_SESSION } from './data/sessions';
 import { calculateLongevityScore } from './utils/calculations';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('dashboard');
   const [sessionData, setSessionData] = useState(defaultSessionData);
-  const [currentSession, setCurrentSession] = useState('session12');
+  const [currentSession, setCurrentSession] = useState(LAST_SESSION);
   const [plantGrowth, setPlantGrowth] = useState(75);
   const [currentDay, setCurrentDay] = useState('day1');
   const [showChat, setShowChat] = useState(false);
 
   const longevityScore = calculateLongevityScore(sessionData, currentSession);
-  const session1Score = calculateLongevityScore(sessionData, 'session1');
-  const session12Score = calculateLongevityScore(sessionData, 'session12');
+  const firstScore = calculateLongevityScore(sessionData, FIRST_SESSION);
+  const lastScore = calculateLongevityScore(sessionData, LAST_SESSION);
 
   const handleOpenChat = () => {
     setShowChat(true);
@@ -37,8 +38,8 @@ export default function App() {
         <Header />
         <LongevityScoreHero
           longevityScore={longevityScore}
-          session1Score={session1Score}
-          session12Score={session12Score}
+          firstScore={firstScore}
+          lastScore={lastScore}
           plantGrowth={plantGrowth}
         />
 
