@@ -1,5 +1,6 @@
 import { Leaf, Calendar, Heart, Sprout, Sparkles, MapPin } from 'lucide-react';
 import { suggestions } from '../data/suggestions';
+import ClassBookingProposal from './ClassBookingProposal';
 import directionsMap from '@assets/Screenshot_2026-02-14_at_3.26.16_PM_1771111584615.png';
 import alternativesMap from '@assets/Screenshot_2026-02-14_at_3.26.59_PM_1771111623310.png';
 import harvestBowlImg from '@assets/j-g-1yDF6qRULCY-unsplash_1771111819808.jpg';
@@ -171,6 +172,8 @@ export default function SuggestionsView({ currentDay, setCurrentDay, sessionData
         </div>
 
         <div className="mt-6 space-y-5">
+          <ClassBookingProposal />
+
           <div>
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="w-4 h-4 text-orange-500" />

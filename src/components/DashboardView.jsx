@@ -4,6 +4,7 @@ import { calculateProgress, getProgressData } from '../utils/calculations';
 import { SESSION_LIST, FIRST_SESSION, LAST_SESSION } from '../data/sessions';
 import CommunityMatchCard from './CommunityMatchCard';
 import { matchedUser } from '../data/communityData';
+import OuraConnectCard from './OuraConnectCard';
 
 export default function DashboardView({ sessionData, currentSession, setCurrentSession, onOpenChat }) {
   const progressData = getProgressData(sessionData);
@@ -104,6 +105,8 @@ export default function DashboardView({ sessionData, currentSession, setCurrentS
         sessionData={sessionData}
         onOpenChat={onOpenChat}
       />
+
+      <OuraConnectCard />
 
       <div className="bg-gradient-to-br from-rose-100/80 to-orange-100/80 rounded-3xl p-8 border border-rose-200/50 card-hover animate-fadeInUp" style={{animationDelay: '0.7s'}}>
         <div className="flex items-start gap-4">

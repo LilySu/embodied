@@ -60,6 +60,76 @@ We focus on sustainable lifestyle markers rather than agility or brute strength:
 
 ---
 
+## 🔗 Oura Integration (Local POC)
+
+This repo now includes a lightweight local backend for Oura OAuth + data sync:
+
+- Backend entry: `server/index.js`
+- Frontend card: Dashboard -> **Oura Integration**
+
+### 1. Set env vars (backend shell)
+
+```bash
+export OURA_CLIENT_ID=\"your_oura_client_id\"
+export OURA_CLIENT_SECRET=\"your_oura_client_secret\"
+export FRONTEND_URL=\"http://localhost:5000\"
+export OURA_REDIRECT_URI=\"http://localhost:8080/auth/oura/callback\"
+```
+
+Optional (defaults to `personal daily`):
+
+```bash
+export OURA_SCOPES=\"personal daily\"
+```
+
+### 2. Run frontend + backend
+
+```bash
+npm run dev:server   # backend on :8080
+npm run dev          # frontend on :5000
+```
+
+Or in one shell:
+
+```bash
+npm run dev:all
+```
+
+### 3. Configure frontend API base URL
+
+Set `VITE_API_BASE_URL` if your backend is not `http://localhost:8080`.
+
+```bash
+export VITE_API_BASE_URL=\"http://localhost:8080\"
+```
+
+### Notes
+
+- Current token storage is in-memory (single-user dev mode).
+- Refreshing/restarting backend clears tokens.
+- This is a POC; production should persist tokens in a database + encrypted secret store.
+
+### Mock mode (no Oura credentials required)
+
+Use mock data to validate the full frontend flow locally:
+
+```bash
+export OURA_MOCK=\"1\"
+export FRONTEND_URL=\"http://localhost:5000\"
+export VITE_API_BASE_URL=\"http://localhost:8080\"
+```
+
+Then run:
+
+```bash
+npm run dev:server
+npm run dev
+```
+
+Open the app, go to Dashboard, click **Connect Oura**. In mock mode, it immediately connects and returns sample readiness/sleep/activity data.
+
+---
+
 ## 📈 Traction & Roadmap
 * **Validation:** 25 clients ready to pay **$30–50/month**.
 * **Ecosystem:** Part of **PROTOKOL**, a wellness company bringing ancient wisdom to modern biomarker science.
