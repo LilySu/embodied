@@ -24,7 +24,6 @@ export default function OuraConnectCard() {
   const [connected, setConnected] = useState(false);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
 
   const metrics = useMemo(() => {
@@ -49,7 +48,6 @@ export default function OuraConnectCard() {
 
   const loadStatusAndData = async () => {
     setLoading(true);
-    setError('');
     try {
       const status = await fetchJson('/api/oura/status');
       setConnected(Boolean(status.connected));
@@ -61,7 +59,9 @@ export default function OuraConnectCard() {
         setSummary(null);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load Oura data');
+      // Silence fetch failures when backend is unavailable in standalone deployments.
+      setConnected(false);
+      setSummary(null);
     } finally {
       setLoading(false);
     }
@@ -103,20 +103,16 @@ export default function OuraConnectCard() {
             Connect your Oura account to pull readiness, sleep, and activity.
           </p>
         </div>
-        <div className={`px-3 py-1 rounded-full text-xs font-medium ${connected ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-          {connected ? 'Connected' : 'Not Connected'}
-        </div>
+        {connected && (
+          <div className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+            Connected
+          </div>
+        )}
       </div>
 
       {statusMessage && (
         <p className="text-sm mt-3 text-amber-800" style={{fontFamily: 'Work Sans, sans-serif'}}>
           {statusMessage}
-        </p>
-      )}
-
-      {error && (
-        <p className="text-sm mt-3 text-rose-700" style={{fontFamily: 'Work Sans, sans-serif'}}>
-          {error}
         </p>
       )}
 
